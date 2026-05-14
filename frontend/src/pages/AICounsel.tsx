@@ -71,8 +71,7 @@ function AICounsel() {
     try {
       const response = await fetch(
         `${
-          import.meta.env.VITE_API_BASE_URL ||
-          "https://unannotated-overthickly-ceola.ngrok-free.dev"
+          import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
         }/api/rag`,
         {
           method: "POST",

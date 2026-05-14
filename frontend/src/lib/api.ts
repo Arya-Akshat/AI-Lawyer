@@ -3,7 +3,7 @@
 
 export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://unannotated-overthickly-ceola.ngrok-free.dev";
+  "http://localhost:3000";
 
 // ============================================================================
 // TYPE DEFINITIONS (matching Mongoose schema exactly)

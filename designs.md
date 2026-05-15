@@ -253,3 +253,24 @@ flowchart TD
     style LLM fill:#8E44AD,stroke:#fff,color:#fff
     style FAISS fill:#F39C12,stroke:#fff,color:#fff
 ```
+
+## System Design Philosophy
+
+The AI-Lawyer Platform is engineered using modern system design principles to ensure modularity, scalability, and reliability. This project encompasses several key pillars of system architecture:
+
+### 1. High-Level Architecture (Macro Design)
+*   **Three-Tier Architecture**: Separation of concerns between the **Frontend** (React/Vite), **Orchestration Layer** (Express/Node.js), and **AI Processing Layer** (FastAPI/Python).
+*   **Service Decomposition**: Heavy AI/ML processing is delegated to Python to leverage specialized libraries like LangGraph and FAISS, while Node.js handles high-concurrency tasks like Telegram webhooks and authentication.
+
+### 2. Data Architecture (Schema Design)
+*   **Complex Document Modeling**: The MongoDB schema is designed to handle deeply nested, multi-section legal documents (Public, Private, and Evidence sections).
+*   **State Management**: Utilizes **Redis** as a distributed cache and session store to manage the conversational state machine for the Telegram bot.
+
+### 3. Interaction & Integration Design
+*   **Synchronous & Asynchronous Flows**: The system manages real-time API requests from the web dashboard while handling long-running document classification tasks through orchestrated backend calls.
+*   **Agentic Workflows (RAG)**: Implements a sophisticated Retrieval Augmented Generation pipeline:
+    *   *Document -> Extraction -> Embedding -> FAISS Vector Store -> Agentic Query*.
+
+### 4. Reliability & Fallbacks
+*   **Redundancy**: The RAG agent is designed with a fallback mechanism—if internal case documents (FAISS) don't provide a sufficient answer, the system automatically triggers a **Tavily Web Search** to ensure the user receives comprehensive information.
+

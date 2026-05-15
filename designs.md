@@ -196,3 +196,60 @@ The AI-Lawyer Platform utilizes a three-tier architecture augmented by specializ
 
 ### AI Counsel Query (RAG Flow)
 ![AI Counsel Query (RAG Flow)](images/AI%20Counsel%20Query.png)
+
+## Component Interaction Diagram
+
+```mermaid
+flowchart TD
+    subgraph "External Entities"
+        TG[Telegram Bot User]
+        WEB[Web Browser User]
+        Tavily[Tavily Web Search]
+    end
+
+    subgraph "Frontend Layer (React)"
+        FE[UDAAN Dashboard]
+    end
+
+    subgraph "Orchestration Layer (Express)"
+        EX[Express API Server]
+        REDIS[(Redis Session Store)]
+        MONGO[(MongoDB Database)]
+    end
+
+    subgraph "AI Processing Layer (FastAPI)"
+        PY[Python AI Backend]
+        AGENT[LangGraph RAG Agent]
+        FAISS[(FAISS Vector DB)]
+        LLM[Gemini / Groq LLMs]
+    end
+
+    %% Telegram Intake Flow
+    TG -- Webhook --> EX
+    EX -- State Mgmt --> REDIS
+    EX -- Multipart File Data --> PY
+    PY -- OCR/Extraction --> LLM
+    PY -- Structured JSON --> EX
+    EX -- Persistent Storage --> MONGO
+
+    %% RAG Flow
+    WEB -- API Request --> FE
+    FE -- Auth/JSON --> EX
+    EX -- Proxy Request --> AGENT
+    AGENT -- Similarity Search --> FAISS
+    AGENT -- Fallback Search --> Tavily
+    AGENT -- Contextual Answer --> LLM
+    LLM -- Final Response --> AGENT
+    AGENT -- JSON Response --> EX
+    EX -- Response --> FE
+    FE -- UI Render --> WEB
+
+    %% Styling
+    style TG fill:#24A1DE,stroke:#fff,color:#fff
+    style WEB fill:#61DAFB,stroke:#333
+    style Tavily fill:#FF6B6B,stroke:#fff,color:#fff
+    style MONGO fill:#47A248,stroke:#fff,color:#fff
+    style REDIS fill:#DC382D,stroke:#fff,color:#fff
+    style LLM fill:#8E44AD,stroke:#fff,color:#fff
+    style FAISS fill:#F39C12,stroke:#fff,color:#fff
+```

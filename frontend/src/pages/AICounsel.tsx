@@ -24,8 +24,11 @@ import {
 import { Link } from "react-router-dom";
 import AppLayout from "@/components/AppLayout";
 
+import { sendAICounselMessage } from "@/lib/api";
+
 function AICounsel() {
   const [message, setMessage] = useState("");
+  // ... rest of state
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -70,25 +73,14 @@ function AICounsel() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/rag", {
-        method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-          },
-          body: JSON.stringify({ query: message }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
+      const response = await sendAICounselMessage(message, {
+        userId: "lawyerUser", // Hardcoded for now or get from auth context
+        userRole: "lawyer",
+      });
 
       const aiMessage = {
         role: "assistant",
-        content: data.response,
+        content: response,
         timestamp: new Date(),
       };
 

@@ -321,15 +321,14 @@ export async function sendAICounselMessage(
 ): Promise<string> {
   try {
     // TODO: Connect to LangGraph endpoint with RAG + Gemini Flash + BART integration
-    const response = await fetch(`${API_BASE_URL}/ai-counsel`, {
+    const response = await fetch(`${API_BASE_URL}/api/rag`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "ngrok-skip-browser-warning": "true",
       },
       body: JSON.stringify({
-        message,
-        context,
+        query: message,
       }),
     });
 

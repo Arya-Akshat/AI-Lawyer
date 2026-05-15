@@ -19,6 +19,7 @@ import {
   Sparkles,
   FileText,
   Clock,
+  Trash2,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import AppLayout from "@/components/AppLayout";
@@ -69,12 +70,8 @@ function AICounsel() {
     setMessage("");
 
     try {
-      const response = await fetch(
-        `${
-          import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
-        }/api/rag`,
-        {
-          method: "POST",
+      const response = await fetch("/api/rag", {
+        method: "POST",
           headers: {
             "Content-Type": "application/json",
             "ngrok-skip-browser-warning": "true",
@@ -106,6 +103,19 @@ function AICounsel() {
       };
       setMessages((prev) => [...prev, errorMessage]);
       console.error("Error:", error);
+    }
+  };
+
+  const handleClearChat = () => {
+    if (confirm("Are you sure you want to clear the conversation?")) {
+      setMessages([
+        {
+          role: "assistant",
+          content:
+            "Hello! I'm UDAAN AI Counsel. I can help you with case summaries, legal research, precedent analysis, and more. How can I assist you today?",
+          timestamp: new Date(),
+        },
+      ]);
     }
   };
 
@@ -201,10 +211,21 @@ function AICounsel() {
                       analysis
                     </CardDescription>
                   </div>
-                  <Badge variant="secondary" className="gap-1">
-                    <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
-                    Online
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearChat}
+                      className="text-muted-foreground hover:text-destructive gap-2 h-8"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="text-xs">Clear Chat</span>
+                    </Button>
+                    <Badge variant="secondary" className="gap-1">
+                      <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+                      Online
+                    </Badge>
+                  </div>
                 </div>
               </CardHeader>
 
